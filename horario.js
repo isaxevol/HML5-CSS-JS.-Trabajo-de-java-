@@ -1,15 +1,16 @@
 // Datos base tomados del archivo legacy y normalizados
+// Ajuste: se agregan grupos 2, 3 y 4 con variedad de materias y días
 const clases = [
-  { codigo: '0413', asignatura: 'Programación Web', grupo: 'Gpo1', dia: 'MARTES',   inicio: '10:00', fin: '11:40', aula: 'E201' },
-  { codigo: '0413', asignatura: 'Programación Web', grupo: 'Gpo1', dia: 'JUEVES',   inicio: '15:00', fin: '16:40', aula: 'E201' },
-  { codigo: '0402', asignatura: 'Intro. ING',       grupo: 'Gpo3', dia: 'LUNES',    inicio: '08:00', fin: '09:40', aula: 'D104' },
-  { codigo: '0402', asignatura: 'Intro. ING',       grupo: 'Gpo3', dia: 'MIERCOLES',inicio: '08:00', fin: '09:40', aula: 'D104' },
-  { codigo: '0402', asignatura: 'Intro. ING',       grupo: 'Gpo4', dia: 'LUNES',    inicio: '10:00', fin: '11:40', aula: 'E201' },
-  { codigo: '0402', asignatura: 'Intro. ING',       grupo: 'Gpo4', dia: 'JUEVES',   inicio: '08:00', fin: '09:40', aula: 'E201' },
-  { codigo: '0402', asignatura: 'Intro. ING',       grupo: 'Gpo7', dia: 'LUNES',    inicio: '15:00', fin: '16:40', aula: 'D104' },
-  { codigo: '0402', asignatura: 'Intro. ING',       grupo: 'Gpo7', dia: 'JUEVES',   inicio: '13:00', fin: '14:40', aula: 'D104' },
-  { codigo: '0402', asignatura: 'Intro. ING',       grupo: 'Gpo8', dia: 'MARTES',   inicio: '15:00', fin: '16:40', aula: 'D104' },
-  { codigo: '0402', asignatura: 'Intro. ING',       grupo: 'Gpo8', dia: 'MIERCOLES',inicio: '13:00', fin: '14:40', aula: 'D104' },
+  { codigo: '0413', asignatura: 'Programación Web', grupo: 'Gpo2', dia: 'MARTES',    inicio: '10:00', fin: '11:40', aula: 'E201' },
+  { codigo: '0413', asignatura: 'Programación Web', grupo: 'Gpo4', dia: 'JUEVES',    inicio: '15:00', fin: '16:40', aula: 'E201' },
+  { codigo: '0402', asignatura: 'Intro. ING',       grupo: 'Gpo3', dia: 'LUNES',     inicio: '08:00', fin: '09:40', aula: 'D104' },
+  { codigo: '0402', asignatura: 'Intro. ING',       grupo: 'Gpo3', dia: 'MIERCOLES', inicio: '08:00', fin: '09:40', aula: 'D104' },
+  { codigo: '0402', asignatura: 'Intro. ING',       grupo: 'Gpo2', dia: 'LUNES',     inicio: '10:00', fin: '11:40', aula: 'E201' },
+  { codigo: '0402', asignatura: 'Intro. ING',       grupo: 'Gpo4', dia: 'JUEVES',    inicio: '08:00', fin: '09:40', aula: 'E201' },
+  { codigo: '0501', asignatura: 'Cálculo I',        grupo: 'Gpo4', dia: 'LUNES',     inicio: '15:00', fin: '16:40', aula: 'D104' },
+  { codigo: '0501', asignatura: 'Cálculo I',        grupo: 'Gpo2', dia: 'JUEVES',    inicio: '13:00', fin: '14:40', aula: 'D104' },
+  { codigo: '0601', asignatura: 'Física I',         grupo: 'Gpo3', dia: 'MARTES',    inicio: '15:00', fin: '16:40', aula: 'D104' },
+  { codigo: '0601', asignatura: 'Física I',         grupo: 'Gpo2', dia: 'MIERCOLES', inicio: '13:00', fin: '14:40', aula: 'D104' },
 ];
 
 // Utilidades
@@ -20,12 +21,22 @@ function horaToInt(hhmm){ return parseInt(hhmm.split(':')[0],10); }
 function renderLista(){
   const tbody = document.getElementById('tbodyLista');
   tbody.innerHTML = '';
+
+  const grupoToBadge = (grupo) => {
+    const n = (grupo.match(/(\d+)/) || [])[1];
+    if(n === '2') return 'badge-grupo-2';
+    if(n === '3') return 'badge-grupo-3';
+    if(n === '4') return 'badge-grupo-4';
+    return 'bg-info text-dark';
+  };
+
   for(const c of clases){
     const tr = document.createElement('tr');
+    const badgeClass = grupoToBadge(c.grupo);
     tr.innerHTML = `
       <td class="text-center">${c.codigo}</td>
       <td class="fw-bold">${c.asignatura}</td>
-      <td class="text-center"><span class="badge bg-info text-dark">${c.grupo}</span></td>
+      <td class="text-center"><span class="badge ${badgeClass}">${c.grupo}</span></td>
       <td class="text-center">${c.dia}</td>
       <td class="text-center">${c.inicio} - ${c.fin}</td>
       <td class="text-center"><span class="badge bg-secondary">${c.aula}</span></td>
@@ -57,9 +68,11 @@ function renderCalendario(){
       // Buscar si hay clase que inicie exactamente a la hora h
       const match = clases.find(c => c.dia === d && horaToInt(c.inicio) === h);
       if(match){
+        const n = (match.grupo.match(/(\d+)/) || [])[1];
+        const badgeClass = n === '2' ? 'badge-grupo-2' : n === '3' ? 'badge-grupo-3' : n === '4' ? 'badge-grupo-4' : 'bg-light text-dark';
         const div = document.createElement('div');
         div.className = 'event';
-        div.innerHTML = `<div class="fw-bold">${match.asignatura} <span class="badge bg-light text-dark ms-1">${match.grupo}</span></div>
+        div.innerHTML = `<div class="fw-bold">${match.asignatura} <span class="badge ${badgeClass} ms-1">${match.grupo}</span></div>
                          <div>${match.inicio} - ${match.fin} • <span class="room">${match.aula}</span></div>`;
         td.appendChild(div);
       }
@@ -78,20 +91,28 @@ function activarVista(vista){
   const seccionLista = document.getElementById('vistaLista');
   const seccionCalendario = document.getElementById('vistaCalendario');
 
+  // Añadir clases de transición
+  seccionLista.classList.add('fade-container');
+  seccionCalendario.classList.add('fade-container');
+
   if(vista === 'lista'){
     btnLista.classList.remove('btn-outline-secondary');
     btnLista.classList.add('btn-primary');
     btnCalendario.classList.remove('btn-primary');
     btnCalendario.classList.add('btn-outline-secondary');
-    seccionLista.classList.remove('hidden');
-    seccionCalendario.classList.add('hidden');
+
+    // Animación: ocultar calendario y mostrar lista con fade
+    seccionCalendario.classList.add('is-hidden');
+    seccionLista.classList.remove('is-hidden');
   } else {
     btnCalendario.classList.remove('btn-outline-secondary');
     btnCalendario.classList.add('btn-primary');
     btnLista.classList.remove('btn-primary');
     btnLista.classList.add('btn-outline-secondary');
-    seccionCalendario.classList.remove('hidden');
-    seccionLista.classList.add('hidden');
+
+    // Animación: ocultar lista y mostrar calendario con fade
+    seccionLista.classList.add('is-hidden');
+    seccionCalendario.classList.remove('is-hidden');
   }
 }
 
@@ -115,4 +136,6 @@ document.getElementById('btnExport').addEventListener('click', () => {
 // Render inicial
 renderLista();
 renderCalendario();
+// Inicialmente oculto calendario con clase de fade
+document.getElementById('vistaCalendario').classList.add('is-hidden');
 activarVista('lista');
