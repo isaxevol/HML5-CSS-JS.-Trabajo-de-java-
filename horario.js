@@ -101,18 +101,26 @@ function activarVista(vista){
     btnCalendario.classList.remove('btn-primary');
     btnCalendario.classList.add('btn-outline-secondary');
 
-    // Animación: ocultar calendario y mostrar lista con fade
-    seccionCalendario.classList.add('is-hidden');
-    seccionLista.classList.remove('is-hidden');
+    // Ocultar calendario y mostrar lista (sin ocupar espacio)
+    seccionCalendario.classList.add('hidden');
+    seccionLista.classList.remove('hidden');
+
+    // Aplicar fade-in a la vista mostrada
+    seccionLista.classList.add('is-fading');
+    requestAnimationFrame(() => seccionLista.classList.remove('is-fading'));
   } else {
     btnCalendario.classList.remove('btn-outline-secondary');
     btnCalendario.classList.add('btn-primary');
     btnLista.classList.remove('btn-primary');
     btnLista.classList.add('btn-outline-secondary');
 
-    // Animación: ocultar lista y mostrar calendario con fade
-    seccionLista.classList.add('is-hidden');
-    seccionCalendario.classList.remove('is-hidden');
+    // Ocultar lista y mostrar calendario (sin ocupar espacio)
+    seccionLista.classList.add('hidden');
+    seccionCalendario.classList.remove('hidden');
+
+    // Aplicar fade-in a la vista mostrada
+    seccionCalendario.classList.add('is-fading');
+    requestAnimationFrame(() => seccionCalendario.classList.remove('is-fading'));
   }
 }
 
@@ -136,6 +144,6 @@ document.getElementById('btnExport').addEventListener('click', () => {
 // Render inicial
 renderLista();
 renderCalendario();
-// Inicialmente oculto calendario con clase de fade
-document.getElementById('vistaCalendario').classList.add('is-hidden');
+// Asegurar que solo la lista esté visible y el calendario no ocupe espacio
+document.getElementById('vistaCalendario').classList.add('hidden');
 activarVista('lista');
